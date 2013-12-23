@@ -1,0 +1,13 @@
+name: ChristmasGift
+version: 0.1
+author: rfsantos1996
+main: com.jabyftw.christmasg.ChristmasGift
+description: Give a random item as a christmas gift
+commands:
+   christmas:
+     description: Main command
+     usage: Use /christmas [remaining]
+permissions:
+   christmas.get:
+     description: Allow player to receive the gift
+     default: true
