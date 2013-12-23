@@ -41,7 +41,6 @@ public class ChristmasGift extends JavaPlugin implements CommandExecutor {
         String[] gift = {"0.8;diamond;10", "0.2;diamond_sword;5"};
         config.addDefault("config.gifts", Arrays.asList(gift));
         config.addDefault("config.grinchPercent", 5);
-        config.addDefault("cooldown.test", System.currentTimeMillis());
         //config.addDefault("lang.", "&");
         config.addDefault("lang.grinchMessage", "&4Haha, Grinch got you! &cYou lost your gift. ;(");
         config.addDefault("lang.giftMessage", "&eCongratulations! &6You received a gift!");
@@ -49,6 +48,7 @@ public class ChristmasGift extends JavaPlugin implements CommandExecutor {
         config.addDefault("lang.onCooldown", "&cYou can only use this every %cooldown hour(s)");
         config.addDefault("lang.useCommandToGetItems", "&6There are itens remaining! Use &e/christmas remaining &6to get them.");
         config.addDefault("lang.thereAreNoItensRemaining", "&cThere are no itens remaining!");
+        config.addDefault("cooldown.test", System.currentTimeMillis());
         config.options().copyDefaults(true);
         saveConfig();
         reloadConfig();
