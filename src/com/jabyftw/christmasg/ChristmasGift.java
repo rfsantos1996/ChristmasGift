@@ -43,8 +43,8 @@ public class ChristmasGift extends JavaPlugin implements CommandExecutor {
         config.addDefault("lang.giftMessage", "&eCongratulations! &6You received a gift!");
         config.addDefault("lang.noPermission", "&cYou dont have permission!");
         config.addDefault("lang.onCooldown", "&cYou can only use this every %cooldown hour(s)");
-        config.addDefault("lang.useCommandToGetItems", "&6There are itens remaining! Use &e/christmas remaining &6to get them.");
-        config.addDefault("lang.thereAreNoItensRemaining", "&cThere are no itens remaining!");
+        config.addDefault("lang.useCommandToGetItems", "&6There are items remaining! Use &e/christmas remaining &6to get them.");
+        config.addDefault("lang.thereAreNoItemsRemaining", "&cThere are no items remaining!");
         config.addDefault("cooldown.test", System.currentTimeMillis());
         config.options().copyDefaults(true);
         saveConfig();
@@ -75,7 +75,7 @@ public class ChristmasGift extends JavaPlugin implements CommandExecutor {
                         giveRemaining(p);
                         return true;
                     } else {
-                        sender.sendMessage(getLang("thereAreNoItensRemaining"));
+                        sender.sendMessage(getLang("thereAreNoItemsRemaining"));
                         return true;
                     }
                 } else {
