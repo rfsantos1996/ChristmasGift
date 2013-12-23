@@ -94,14 +94,14 @@ public class ChristmasGift extends JavaPlugin implements CommandExecutor {
                     long timeUsed = config.getLong("cooldown." + name);
                     if (timeUsed > 0) { // have cooldown time
                         if (outOfCooldown(timeUsed)) {
-                            giveGift(p);
+                            giveGift(p, false);
                             return true;
                         } else {
                             sender.sendMessage(getLang("onCooldown").replaceAll("%cooldown", Integer.toString(giftDelay)));
                             return true;
                         }
                     } else { // first time
-                        giveGift(p);
+                        giveGift(p, true);
                         return true;
                     }
                 } else {
@@ -138,7 +138,7 @@ public class ChristmasGift extends JavaPlugin implements CommandExecutor {
         return (r.nextInt(100) < chance);
     }
 
-    private void giveGift(Player p) {
+    private void giveGift(Player p, boolean firstTime) {
         if (!takePresent(grinchChance)) {
             Map<Integer, ItemStack> it = p.getInventory().addItem(gifts.next());
             if (it.size() > 0) {
@@ -150,7 +150,11 @@ public class ChristmasGift extends JavaPlugin implements CommandExecutor {
         } else {
             p.sendMessage(getLang("grinchMessage"));
         }
-        config.addDefault("cooldown." + p.getName().toLowerCase(), System.currentTimeMillis());
+        if (firstTime) {
+            config.addDefault("cooldown." + p.getName().toLowerCase(), System.currentTimeMillis());
+        } else {
+            config.set("cooldown." + p.getName().toLowerCase(), System.currentTimeMillis());
+        }
         configYML.saveCustomConfig();
     }
 
