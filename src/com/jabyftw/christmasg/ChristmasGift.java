@@ -1,5 +1,7 @@
 package com.jabyftw.christmasg;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -22,15 +24,19 @@ import org.bukkit.plugin.java.JavaPlugin;
  */
 public class ChristmasGift extends JavaPlugin implements CommandExecutor {
 
-    private FileConfiguration config;
+    CustomConfig configYML;
+    FileConfiguration config;
     private int giftDelay, grinchChance;
     private RandomCollection<ItemStack> gifts = new RandomCollection();
     private Map<String, Map<Integer, ItemStack>> remaining = new HashMap();
 
     @Override
     public void onEnable() {
+        configYML = new CustomConfig(this, "config");
+        config = configYML.getCustomConfig();
         // CONFIGURATION
-        config = getConfig();
+        config.options().header("Version 0.1");
+        config.options().copyHeader(true);
         config.addDefault("config.repeatDelayInHour", 24);
         String[] gift = {"0.8;diamond;10", "0.2;diamond_sword;5"};
         config.addDefault("config.gifts", Arrays.asList(gift));
@@ -40,7 +46,7 @@ public class ChristmasGift extends JavaPlugin implements CommandExecutor {
         config.addDefault("lang.grinchMessage", "&4Haha, Grinch got you! &cYou lost your gift. ;(");
         config.addDefault("lang.giftMessage", "&eCongratulations! &6You received a gift!");
         config.addDefault("lang.noPermission", "&cYou dont have permission!");
-        config.addDefault("lang.onCooldown", "&cYou can only use this every %cooldown hours");
+        config.addDefault("lang.onCooldown", "&cYou can only use this every %cooldown hour(s)");
         config.addDefault("lang.useCommandToGetItems", "&6There are itens remaining! Use &e/christmas remaining &6to get them.");
         config.addDefault("lang.thereAreNoItensRemaining", "&cThere are no itens remaining!");
         config.options().copyDefaults(true);
@@ -53,7 +59,7 @@ public class ChristmasGift extends JavaPlugin implements CommandExecutor {
         grinchChance = config.getInt("config.grinchPercent");
         // PLUGIN
         getServer().getPluginCommand("christmas").setExecutor(this);
-        getLogger().log(Level.INFO, "Time in ms = {0}", System.currentTimeMillis());
+        getLogger().log(Level.INFO, "Loaded, merry christmas! (;");
     }
 
     @Override
@@ -123,9 +129,9 @@ public class ChristmasGift extends JavaPlugin implements CommandExecutor {
             for (Material m : Material.values()) {
                 if (m.toString().equalsIgnoreCase(st2[1])) {
                     map.put(Double.parseDouble(st2[0]), new ItemStack(m, Integer.parseInt(st2[2])));
+                    break;
                 }
             }
-            getLogger().log(Level.WARNING, "Couldn''t determinate material for {0}, returning air.", st2[1]);
         }
         return map;
     }
@@ -141,13 +147,14 @@ public class ChristmasGift extends JavaPlugin implements CommandExecutor {
             if (it.size() > 0) {
                 remaining.put(p.getName().toLowerCase(), it);
                 p.sendMessage(getLang("useCommandToGetItems"));
+            } else {
+                p.sendMessage(getLang("giftMessage"));
             }
-            p.sendMessage(getLang("giftMessage"));
         } else {
             p.sendMessage(getLang("grinchMessage"));
         }
-        config.set("cooldown." + p.getName().toLowerCase(), System.currentTimeMillis());
-        saveConfig();
+        config.addDefault("cooldown." + p.getName().toLowerCase(), System.currentTimeMillis());
+        configYML.saveCustomConfig();
     }
 
     private void giveRemaining(Player p) {
@@ -157,8 +164,8 @@ public class ChristmasGift extends JavaPlugin implements CommandExecutor {
             p.sendMessage(getLang("useCommandToGetItems"));
         } else {
             remaining.remove(p.getName().toLowerCase());
+            p.sendMessage(getLang("giftMessage"));
         }
-        p.sendMessage(getLang("giftMessage"));
     }
 
     private boolean outOfCooldown(long timeUsed) {
